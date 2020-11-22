@@ -3,8 +3,6 @@ just copy and paste these imports into 'main.ts',
 which should allow the code to run.
 */
 
-import './ezmoney/backup/test';
-
 import './ezmoney/commands/admin';
 import './ezmoney/commands/master';
 import './ezmoney/commands/profile';
