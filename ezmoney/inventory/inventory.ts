@@ -56,6 +56,8 @@ obc.on(
   }
 );
 
+const nonBuyableItems = [`${inventory.Item.gemID}`];
+
 obc.on(
   {
     name: 'buy',
@@ -64,6 +66,9 @@ obc.on(
   (a) => ({ shopItem: a.string(), count: a.integerOptional() }),
   async (message, { shopItem, count }) => {
     count = count || 1;
+    if (nonBuyableItems.includes(shopItem.toLowerCase())) {
+      return message.reply(`This item cannot be Purchased.`);
+    }
     const item = inventory.findItemByName(shopItem);
     if (item == null) {
       return message.reply({
