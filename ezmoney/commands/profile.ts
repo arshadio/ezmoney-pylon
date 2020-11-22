@@ -46,7 +46,7 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
           name: 'Level',
           value: `**${userLevel}**\n${new Array(10)
             .fill(0)
-            .map((el, i) => (i < finalLvlToGetMulti / userLevel ? '■' : '□'))
+            .map((el, i) => (i < (userLevel / finalLvlToGetMulti) * 10 ? '■' : '□'))
             .join('')}`,
           inline: true
         })
