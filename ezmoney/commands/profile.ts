@@ -55,7 +55,7 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
           value: `**${xp}/${xpForLevel}**\n${new Array(10)
             .fill(0)
             .map((el, i) =>
-              i < Math.floor((xp - previousLevel) / (xpForLevel / 100) / 10)
+              i < Math.floor((xp - previousLevel) / ((xpForLevel - previousLevel) / 100) / 10)
                 ? '■'
                 : '□'
             )
