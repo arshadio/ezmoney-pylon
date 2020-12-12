@@ -95,7 +95,10 @@ obc.on(
         message.author.id,
         inventory.ItemConfig.lockPentalty
       );
-      await invfunc.changedLockEquip(target.user.id, -1);
+      await invfunc.changedLockEquip(
+        target.user.id,
+        lockChance >= 0.5 ? -1 : 0
+      );
       return message.reply(
         `You try to steal from ${target.user.username}, but are stopped by a **${def.standards.shopIcons.lock} Padlock**. You pay the victim **${def.standards.currency}${inventory.ItemConfig.lockPentalty}**`
       );

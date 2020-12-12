@@ -225,7 +225,7 @@ export const newEmbed = (
 
 export const extendDescriptions = {
   padlock:
-    'Put a padlock on your account to prevent people from robbing you. This item will break when someone tries to steal from you.',
+  'Put a padlock on your account to prevent people from robbing you. Once this item is broken, it cannot return, unless you buy a new one.',
   heart:
     'Use the Backup Heart to save yourself when dying! If this item is in your inventory, it will be used and prevent you from losing all of your coins.',
   landmine: `This item has a **${ItemConfig.mineChance *
