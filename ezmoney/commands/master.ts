@@ -228,3 +228,30 @@ obc.on(
     await message.reply(embed);
   }
 );
+
+/*
+ * new Bailout Command
+ * if you go to 0 coins you can get 500 coins for free
+ */
+obc.raw({ name: 'bailout', aliases: ['bail'] }, async (message) => {
+  const userBal = await op.getBalance(message.author.id);
+  const gambleAttempts =
+    (await op.getGambleWins(message.author.id)) +
+    (await op.getGambleLosses(message.author.id));
+  if (userBal === 0 && gambleAttempts > 5) {
+    await op.incrementBalance(
+      message.author.id,
+      def.standards.REWARDS.BAILOUT_REWARD
+    );
+    const embed = new discord.Embed();
+    embed
+      .setColor(def.standards.embeds.general)
+      .setDescription(
+        `**🏦 You were given ${def.standards.currency}${def.standards.REWARDS.BAILOUT_REWARD} as part of your bailout.**`
+      );
+    await message.reply(embed);
+  } else
+    return await message.reply(
+      'You are not currently eligible for the bailout.'
+    );
+});

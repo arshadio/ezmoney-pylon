@@ -43,7 +43,8 @@ export interface IUserInventory extends pylon.JsonObject {
     },
     REWARDS: {
       DAILY_REWARD: 150,
-      WEEKLY_REWARD: 1100
+      WEEKLY_REWARD: 1100,
+      BAILOUT_REWARD: 500
     },
     TIMERS: {
       WEEKLY_INTERVAL: 168 * 60 * 60 * 1000,
