@@ -5,6 +5,7 @@ import obc from '../config/setup';
 
 obc.raw('help', async (message) => {
   const cc = [
+    '`bailout`',
     '`balance`',
     '`beg`',
     '`buy`',
