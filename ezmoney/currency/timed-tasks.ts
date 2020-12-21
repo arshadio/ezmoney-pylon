@@ -191,7 +191,7 @@ obc.raw('search', async (message) => {
   if (lastSearch) return message.reply(cooldownmsg);
   const successRate = Math.random();
   const badReward = 0;
-  const badChance = 0.65;
+  const badChance = 0.80;
   const randomReward = Math.ceil(Math.random() * 95 + 1);
   let attempts = 0;
   const choiceOne = op.randomizer(SEARCH_CHOICES.ONE);
