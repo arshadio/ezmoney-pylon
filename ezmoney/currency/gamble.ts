@@ -80,7 +80,7 @@ obc.on(
     const userBal = await op.getBalance(message.author.id);
     const userMulti = await op.getMulti(message.author.id);
     const userReward =
-      Math.ceil(amount * (Math.random() * 1) + 75) +
+      Math.ceil(amount * (Math.random() * 1) + 80) +
       Math.ceil(amount * (userMulti / 100));
     if (amount < 100 || amount > 75000)
       return await message.reply(
