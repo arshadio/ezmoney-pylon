@@ -45,11 +45,11 @@ obc.raw('weekly', async (message) => {
   const lastWeekly = await def.tempStorageKV.get<number>(
     `lastWeekly-${message.author?.id}`
   );
-  const hoursUntil = -Math.ceil((lastWeekly - Date.now()) / 1000 / 86400);
+  const daysUntil = -Math.ceil((lastWeekly - Date.now()) / 1000 / 86400);
   if (lastWeekly)
     return message.reply(
       `You already collected your weekly reward!\nTry again in **${7 -
-        hoursUntil}** days.`
+        daysUntil}** days.`
     );
   await def.tempStorageKV.put(`lastWeekly-${message.author.id}`, Date.now(), {
     ttl: def.standards.TIMERS.WEEKLY_INTERVAL
