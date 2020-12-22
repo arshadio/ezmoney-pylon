@@ -217,7 +217,7 @@ obc.raw('search', async (message) => {
         if (
           choiceOne === SEARCH_CHOICES.ONE[1] &&
           choice === choiceOne &&
-          successRate <= 0.08
+          successRate <= 0.12
         ) {
           await op.incrementBalance(
             message.author.id,
@@ -236,7 +236,7 @@ obc.raw('search', async (message) => {
         if (
           choiceOne === SEARCH_CHOICES.ONE[1] &&
           choice === choiceOne &&
-          successRate >= 0.91
+          successRate >= 0.8
         ) {
           await op.incrementBalance(message.author.id, 75);
           await invfunc.incrementLivesInInventory(message.author.id, 1);
