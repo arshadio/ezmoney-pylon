@@ -10,6 +10,7 @@ import './ezmoney/commands/profile';
 import './ezmoney/config/levelling';
 
 import './ezmoney/currency/gamble';
+import './ezmoney/currency/search';
 import './ezmoney/currency/timed-tasks';
 
 import './ezmoney/inventory/inv-setup';
