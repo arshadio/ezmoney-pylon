@@ -243,6 +243,7 @@ export const itemThumbnails = {
   pickaxe: 'https://images.emojiterra.com/twitter/v13.0/512px/26cf.png',
   gem: 'https://images.emojiterra.com/twitter/v13.0/512px/1f48e.png'
 };
+const getUserItems = async (userId: discord.Snowflake) => {};
 
 export async function buyItem(
   userId: discord.Snowflake,
