@@ -115,12 +115,18 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
       const combined = gw + gl;
       const totalWon = await op.getGained(target.user.id);
       const totalLost = await op.getLost(target.user.id);
+      let symbol =
+        totalLost > totalWon
+          ? discord.decor.Emojis.CHART_WITH_DOWNWARDS_TREND
+          : totalLost === totalWon
+          ? discord.decor.Emojis.STOP_BUTTON
+          : discord.decor.Emojis.CHART_WITH_UPWARDS_TREND;
       const embed = new discord.Embed();
       embed
         .setColor(def.standards.embeds.general)
         .setAuthor({ name: `${target.user.username}'s gambling stats` })
         .setDescription(
-          `stats from the last \`${combined}\` games
+          `${symbol} stats from the last \`${combined}\` games
         ➜ includes **[coinflip, gamble, slots]**`
         )
         .addField({
