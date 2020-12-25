@@ -71,13 +71,6 @@ obc.subcommand('shop', async (shopCommands) => {
           );
         await message.reply(embed);
       } else {
-        const item = inventory.findItemByName(shopItem);
-        if (item == null) {
-          return message.reply({
-            content: unknownItem(shopItem),
-            allowedMentions: {}
-          });
-        }
         const auditItem = shopItem.toLowerCase();
         await message.reply(buildShopEmbed(auditItem));
       }
