@@ -225,7 +225,7 @@ export const newEmbed = (
 
 export const extendDescriptions = {
   padlock:
-  'Put a padlock on your account to prevent people from robbing you. Once this item is broken, it cannot return, unless you buy a new one.',
+    'Put a padlock on your account to prevent people from robbing you. Once this item is broken, it cannot return, unless you buy a new one.',
   heart:
     'Use the Backup Heart to save yourself when dying! If this item is in your inventory, it will be used and prevent you from losing all of your coins.',
   landmine: `This item has a **${ItemConfig.mineChance *
@@ -234,6 +234,14 @@ export const extendDescriptions = {
   }** uses.`,
   pickaxe: `Use the pickaxe alongside the \`mine\` command to harvest valuable **${def.standards.shopIcons.gem} Gem**s, which you can then sell for some profit!`,
   gem: `**${def.standards.shopIcons.gem} Gem**s can be acquired by using the \`mine\` command. You can then sell these Gems for profit!`
+};
+export const itemThumbnails = {
+  padlock: 'https://images.emojiterra.com/twitter/512px/1f512.png',
+  landmine: 'https://images.emojiterra.com/twitter/v13.0/512px/1f9e8.png',
+  heart:
+    'https://creazilla-store.fra1.digitaloceanspaces.com/emojis/54393/red-heart-emoji-clipart-md.png',
+  pickaxe: 'https://images.emojiterra.com/twitter/v13.0/512px/26cf.png',
+  gem: 'https://images.emojiterra.com/twitter/v13.0/512px/1f48e.png'
 };
 
 export async function buyItem(
