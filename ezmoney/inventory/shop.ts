@@ -4,12 +4,10 @@ import * as inventory from './inv-setup';
 import { Item } from './inv-setup';
 import obc from '../config/setup';
 
-// new unknownItem message
 const unknownItem = (name: string) => {
   return `Item with name: **${name}** does not exist, use \`.shop\` to list items that can be purchased.`;
 };
 
-// new
 const getObjectProperty = (name: string, obj: object) => {
   const arr = obj;
   for (const property in arr) {
@@ -19,7 +17,6 @@ const getObjectProperty = (name: string, obj: object) => {
   }
 };
 
-// new
 export const buildShopEmbed = (name: string): discord.Embed => {
   name = name.toLowerCase();
   for (const [item, itemInfo] of inventory.itemConfig.entries()) {
