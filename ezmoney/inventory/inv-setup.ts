@@ -194,35 +194,6 @@ export const renderEmbed = (itemWithInfos: ItemWithInfo[]): discord.Embed => {
   });
 };
 
-export const newEmbed = (
-  shopItem: string,
-  price: number,
-  itemType: ItemTypes,
-  info: string,
-  imageLink: string
-): discord.Embed => {
-  const color = def.standards.embeds.general;
-  const title = `${shopItem}`;
-  const description = [
-    `**Type: \`${itemType}\`**`,
-    '',
-    info,
-    '',
-    `**PRICE** - **${
-      price === 0 ? 'Cannot be purchased' : `${def.standards.currency}${price}`
-    }**`,
-    `**SELLS** - **${def.standards.currency}${
-      price === 0 ? `${ItemConfig.gemPrice}` : `${Math.round(price / 10)}`
-    }**`
-  ].join('\n');
-  return new discord.Embed({
-    title: title,
-    description: description,
-    color: color,
-    thumbnail: { url: imageLink }
-  });
-};
-
 export const extendDescriptions = {
   padlock:
     'Put a padlock on your account to prevent people from robbing you. Once this item is broken, it cannot return, unless you buy a new one.',
