@@ -8,7 +8,7 @@ const unknownItem = (name: string) => {
   return `Item with name: **${name}** does not exist, use \`.shop\` to list items that can be purchased.`;
 };
 
-const getObjectProperty = (name: string, obj: object) => {
+export const getObjectProperty = (name: string, obj: object) => {
   const arr = obj;
   for (const property in arr) {
     if (property.toLowerCase().includes(name))

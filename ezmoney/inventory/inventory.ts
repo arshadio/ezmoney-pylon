@@ -2,6 +2,7 @@ import * as def from '../config/setup';
 import * as op from '../config/functions';
 import * as inventory from './inv-setup';
 import * as invfunc from './func';
+import { getObjectProperty as find } from './shop';
 import obc from '../config/setup';
 
 obc.on(
@@ -14,44 +15,27 @@ obc.on(
     const userHearts = await inventory.getLives(target.user.id);
     const userPicks = await inventory.getPicks(target.user.id);
     const userGems = await inventory.getGems(target.user.id);
+    const mapItems: Map<string, number> = new Map([
+      [`**${def.standards.shopIcons.lock} Padlock:** `, userLocks],
+      [`**${def.standards.shopIcons.mine} Landmine:** `, userMines],
+      [`**${def.standards.shopIcons.life} Backup Heart:** `, userHearts],
+      [`**${def.standards.shopIcons.pick} Pickaxe:** `, userPicks],
+      [`**${def.standards.shopIcons.gem} Gems:** `, userGems]
+    ]);
+    const inventoryWithItems = [];
+    for (const [name, value] of mapItems.entries()) {
+      if (value > 0) {
+        inventoryWithItems.push([name + `**\`${value}\`**`], '\n');
+      }
+    }
     const embed = new discord.Embed();
     embed
       .setColor(def.standards.embeds.general)
       .setAuthor({ name: `${target.user.username}'s inventory` })
-      .setDescription(
-        [
-          `${
-            userLocks === 0 &&
-            userMines === 0 &&
-            userHearts === 0 &&
-            userPicks === 0 &&
-            userGems === 0
-              ? '**no items to see here. \nuse `.shop` to see what you can buy!**'
-              : userLocks === 0
-              ? ''
-              : `**${def.standards.shopIcons.lock} Padlock: \`${userLocks}\`\nType: \`${inventory.ItemTypes.Tool}\`**`
-          }`,
-          ``,
-          `${
-            userMines === 0
-              ? ''
-              : `**${def.standards.shopIcons.mine} Landmine: \`${userMines}\`\nType: \`${inventory.ItemTypes.Tool}\`**`
-          }`,
-          ``,
-          `${
-            userHearts === 0
-              ? ''
-              : `**${def.standards.shopIcons.life} Backup Heart: \`${userHearts}\`\nType: \`${inventory.ItemTypes.PowerUp}\`**`
-          }`,
-          `${
-            userPicks === 0
-              ? userGems === 0
-                ? ''
-                : `\n**${def.standards.shopIcons.gem} Gems: \`${userGems}\`\nType: \`${inventory.ItemTypes.Collectible}\`**`
-              : `\n**${def.standards.shopIcons.pick} Pickaxe: \`${userPicks}\`\nType: \`${inventory.ItemTypes.Tool}\`**\n\n**${def.standards.shopIcons.gem} Gems: \`${userGems}\`\nType: \`${inventory.ItemTypes.Collectible}\`**`
-          }`
-        ].join('\n')
-      );
+      .setDescription(inventoryWithItems.join('\n'))
+      .setFooter({
+        text: "For more information on \nan item, use '.shop <id>'"
+      });
     await message.reply(embed);
   }
 );

@@ -243,7 +243,18 @@ export const itemThumbnails = {
   pickaxe: 'https://images.emojiterra.com/twitter/v13.0/512px/26cf.png',
   gem: 'https://images.emojiterra.com/twitter/v13.0/512px/1f48e.png'
 };
+// prettier-ignore
+export const hardItemTypes = { padlock: ItemTypes.Tool, landmine: ItemTypes.Tool, heart: ItemTypes.PowerUp, pickaxe: ItemTypes.Tool, gem: ItemTypes.Collectible };
 const getUserItems = async (userId: discord.Snowflake) => {};
+
+export const purchaseItem = async (
+  userId: discord.Snowflake,
+  shopItem: string,
+  count: number
+) => {
+  shopItem = shopItem.toLowerCase();
+  const userBalance = await op.getBalance(userId);
+};
 
 export async function buyItem(
   userId: discord.Snowflake,
