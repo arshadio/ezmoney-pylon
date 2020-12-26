@@ -108,6 +108,9 @@ obc.on(
       if (userLives >= 1) {
         await invfunc.incrementLivesInInventory(message.author.id, -1);
         await invfunc.incrementMineUses(target.user.id, 1);
+        if (getTargetMineUsesLeft + 1 === inventory.ItemConfig.mineUses) {
+          await invfunc.changeMineEquip(target.user.id, -1);
+        }
         return message.reply(
           `You step on ${target.user.username}'s **${def.standards.shopIcons.mine} Landmine**, but are saved by your **${def.standards.shopIcons.life} Backup Heart**!`
         );

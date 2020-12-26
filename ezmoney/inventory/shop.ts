@@ -26,7 +26,7 @@ export const buildShopEmbed = (name: string): discord.Embed => {
       name === Item.gemID
     ) {
       return new discord.Embed({
-        title: itemInfo.name,
+        title: `**${itemInfo.name}**`,
         description: `**Type: \`${
           itemInfo.itemType
         }\`** \n\n${getObjectProperty(
