@@ -189,8 +189,8 @@ obc.on(
           .setDescription(
             `You tied! You lost **${def.standards.currency}${Math.round(
               amount / 2
-            )}**\n\nYou now have ${def.standards.currency}${userBal -
-              Math.round(amount / 2)}`
+            )}**\n\nYou now have **${def.standards.currency}${userBal -
+              Math.round(amount / 2)}**`
           )
           .addField({
             name: message.author.username,
