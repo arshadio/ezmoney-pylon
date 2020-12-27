@@ -181,7 +181,11 @@ obc.on(
       case amount > userBal:
         return message.reply(`You don't have that many coins.`);
       case userRoll === botRoll:
-        await op.incrementBalance(message.author.id, Math.round(amount / 2));
+        await op.incrementBalance(message.author.id, -Math.round(amount / 2));
+        const incrementStats = await op.incrementLost(
+          message.author.id,
+          -Math.round(amount / 2)
+        );
         const embed = new discord.Embed();
         embed
           .setColor(def.standards.embeds.neutral)
@@ -208,6 +212,10 @@ obc.on(
           message.author.id,
           userRoll > botRoll ? userReward : -amount
         );
+        const incrementBasedOnResult =
+        userRoll > botRoll
+          ? await op.incrementGained(message.author.id, userReward)
+          : await op.incrementLost(message.author.id, amount);
         const finalEmbed = new discord.Embed();
         finalEmbed
           .setColor(
