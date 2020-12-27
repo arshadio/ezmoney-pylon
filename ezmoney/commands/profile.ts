@@ -2,6 +2,7 @@ import * as def from '../config/setup';
 import * as op from '../config/functions';
 import * as steal from '../steal/steal-func';
 import * as inventory from '../inventory/inv-setup';
+import { getUserRank } from '../steal/stealRanks';
 import obc from '../config/setup';
 
 obc.subcommand({ name: 'profile' }, async (profileC) => {
@@ -42,11 +43,14 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
           name: `${target.user.username}'s profile`,
           iconUrl: target.user.getAvatarUrl()
         })
+        .setDescription(`${await getUserRank(target.user.id)}`)
         .addField({
           name: 'Level',
           value: `**${userLevel}**\n${new Array(10)
             .fill(0)
-            .map((el, i) => (i < (userLevel / finalLvlToGetMulti) * 10 ? '■' : '□'))
+            .map((el, i) =>
+              i < (userLevel / finalLvlToGetMulti) * 10 ? '■' : '□'
+            )
             .join('')}`,
           inline: true
         })
@@ -55,7 +59,10 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
           value: `**${xp}/${xpForLevel}**\n${new Array(10)
             .fill(0)
             .map((el, i) =>
-              i < Math.floor((xp - previousLevel) / ((xpForLevel - previousLevel) / 100) / 10)
+              i <
+              Math.floor(
+                (xp - previousLevel) / ((xpForLevel - previousLevel) / 100) / 10
+              )
                 ? '■'
                 : '□'
             )
@@ -160,7 +167,11 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
       embed
         .setColor(def.standards.embeds.general)
         .setAuthor({ name: `${target.user.username}'s stealing stats` })
-        .setDescription(`stats from the last \`${combined}\` steal attempts`)
+        .setDescription(
+          `${await getUserRank(
+            target.user.id
+          )} \nstats from the last \`${combined}\` steal attempts`
+        )
         .addField({
           name: `Successes`,
           value: `**${rw}**`,
