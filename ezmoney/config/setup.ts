@@ -39,7 +39,8 @@ export interface IUserInventory extends pylon.JsonObject {
     settings: '<:settings:756612184120885380>',
     embeds: {
       general: 0x30bd88,
-      lose: 0xdb5858
+      lose: 0xdb5858,
+      neutral: discord.decor.RoleColors.DARK_YELLOW
     },
     REWARDS: {
       DAILY_REWARD: 150,

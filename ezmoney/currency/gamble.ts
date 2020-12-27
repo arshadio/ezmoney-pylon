@@ -144,6 +144,109 @@ obc.on(
 );
 
 obc.on(
+  { name: 'roll', aliases: ['r'] },
+  (a) => ({ amount: a.integer() }),
+  async (message, { amount }) => {
+    const bot = await discord.getBotUser();
+
+    const userMulti = await op.getMulti(message.author.id);
+    const buffReward =
+      amount > 250 ? 250 : amount > 1000 ? 400 : amount > 10000 ? 1250 : 80;
+    const userReward =
+      Math.ceil(amount * (Math.random() * 1) + buffReward) +
+      Math.ceil(amount * (userMulti / 100));
+
+    const userBal = await op.getBalance(message.author.id);
+    const genRoll = Math.floor(Math.random() * 5 + 1);
+    const userRoll = Math.floor(Math.random() * 5 + 1) + genRoll;
+    const botRoll = Math.floor(Math.random() * 11 + 1);
+
+    const lastRoll = await def.tempStorageKV.get<number>(
+      `lastRoll-${message.author?.id}`
+    );
+    const secondsUntil = -Math.ceil((lastRoll - Date.now()) / 1000);
+    if (lastRoll)
+      return message.reply(
+        `Gambling Addiction is a serious problem.\nTry again in **${5 -
+          secondsUntil}** seconds.`
+      );
+    await def.tempStorageKV.put(`lastRoll-${message.author?.id}`, Date.now(), {
+      ttl: def.standards.TIMERS.BET_INTERVAL
+    });
+    switch (true) {
+      case amount < 100 || amount > 75000:
+        return message.reply(
+          `You can only gamble between **${def.standards.currency}100 and ${def.standards.currency}75000**`
+        );
+      case amount > userBal:
+        return message.reply(`You don't have that many coins.`);
+      case userRoll === botRoll:
+        await op.incrementBalance(message.author.id, Math.round(amount / 2));
+        const embed = new discord.Embed();
+        embed
+          .setColor(def.standards.embeds.neutral)
+          .setAuthor({ name: `${message.author.username}'s Roll` })
+          .setDescription(
+            `You tied! You lost **${def.standards.currency}${Math.round(
+              amount / 2
+            )}**\n\nYou now have ${def.standards.currency}${userBal -
+              Math.round(amount / 2)}`
+          )
+          .addField({
+            name: message.author.username,
+            value: `Rolled \`${userRoll}\``,
+            inline: true
+          })
+          .addField({
+            name: bot.username,
+            value: `Rolled \`${botRoll}\``,
+            inline: true
+          });
+        return message.reply(embed);
+      default:
+        await op.incrementBalance(
+          message.author.id,
+          userRoll > botRoll ? userReward : -amount
+        );
+        const finalEmbed = new discord.Embed();
+        finalEmbed
+          .setColor(
+            userRoll > botRoll
+              ? def.standards.embeds.general
+              : def.standards.embeds.lose
+          )
+          .setAuthor({ name: `${message.author.username}'s Roll` })
+          .setDescription(
+            userRoll > botRoll
+              ? `You won **${
+                  def.standards.currency
+                }${userReward}**\n**Percent of bet won:** ${Math.round(
+                  100 * (1 - ((userReward - amount) / amount) * -1)
+                )}% | **Multiplier:** ${userMulti}% \n\nYou now have **${
+                  def.standards.currency
+                }${userBal + userReward}**`
+              : `You lost **${
+                  def.standards.currency
+                }${amount}**\nYou now have **${
+                  def.standards.currency
+                }${userBal - amount}**`
+          )
+          .addField({
+            name: message.author.username,
+            value: `Rolled \`${userRoll}\``,
+            inline: true
+          })
+          .addField({
+            name: bot.username,
+            value: `Rolled \`${botRoll}\``,
+            inline: true
+          });
+        return message.reply(finalEmbed);
+    }
+  }
+);
+
+obc.on(
   { name: 'slots' },
   (a) => ({ amount: a.integer() }),
   async (message, { amount }) => {
