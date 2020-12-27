@@ -134,7 +134,7 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
         .setAuthor({ name: `${target.user.username}'s gambling stats` })
         .setDescription(
           `${symbol} stats from the last \`${combined}\` games
-        ➜ includes **[coinflip, gamble, slots]**`
+        ➜ includes **[coinflip, gamble, roll, slots]**`
         )
         .addField({
           name: `Amount Won`,
