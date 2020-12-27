@@ -25,7 +25,7 @@ obc.on(
     const inventoryWithItems = [];
     for (const [name, value] of mapItems.entries()) {
       if (value > 0) {
-        inventoryWithItems.push([name + `**\`${value}\`**`], '');
+        inventoryWithItems.push([name + `**\`${value}\`**`]);
       }
     }
     const embed = new discord.Embed();
