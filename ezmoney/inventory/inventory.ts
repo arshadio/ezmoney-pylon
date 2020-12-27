@@ -32,7 +32,11 @@ obc.on(
     embed
       .setColor(def.standards.embeds.general)
       .setAuthor({ name: `${target.user.username}'s inventory` })
-      .setDescription(inventoryWithItems.join('\n'))
+      .setDescription(
+        inventoryWithItems === undefined || inventoryWithItems.length == 0
+          ? '**nothing to see here...**'
+          : inventoryWithItems.join('\n')
+      )
       .setFooter({
         text: "For more information on \nan item, use '.shop <id>'"
       });
