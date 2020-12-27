@@ -256,3 +256,20 @@ obc.raw({ name: 'bailout', aliases: ['bail'] }, async (message) => {
       'You are not currently eligible for the bailout.'
     );
 });
+
+obc.raw('ranks', async (message) => {
+  const ranks = def.standards.ranks;
+  let values = [];
+  for (const badges in ranks) {
+    const value = ranks[badges];
+    values.push(value);
+  }
+  await message.reply(
+    new discord.Embed({
+      description: `Ranks are Earned by being successful in robbing users. \n\n${values.join(
+        '\n'
+      )}`,
+      color: def.standards.embeds.general
+    })
+  );
+});
