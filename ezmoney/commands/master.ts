@@ -13,6 +13,8 @@ obc.raw('help', async (message) => {
     '`daily`',
     '`gamble`',
     '`mine`',
+    '`ranks`',
+    '`roll`',
     '`shop`',
     '`search`',
     '`sell`',
