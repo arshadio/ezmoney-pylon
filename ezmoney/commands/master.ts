@@ -266,7 +266,7 @@ obc.raw('ranks', async (message) => {
   }
   await message.reply(
     new discord.Embed({
-      description: `Ranks are Earned by being successful in robbing users. \n\n${values.join(
+      description: `Ranks are Earned by being successful in robbing users. \nThese Ranks show up on your profile card. \n\n${values.join(
         '\n'
       )}`,
       color: def.standards.embeds.general
