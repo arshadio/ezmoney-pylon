@@ -201,6 +201,8 @@ obc.on(
     const targetBal = await op.getBalance(target.user.id);
     if (target.user.id === message.author.id)
       return message.reply(`You can't share coins with yourself!`);
+    if (target.user.bot)
+      return message.reply(`You can't share coins with bots.`);
     if (userBal < 500)
       return message.reply(
         `You need at least **${def.standards.currency}500** to share coins with people.`
