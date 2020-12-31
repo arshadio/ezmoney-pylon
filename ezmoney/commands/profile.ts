@@ -2,7 +2,7 @@ import * as def from '../config/setup';
 import * as op from '../config/functions';
 import * as steal from '../steal/steal-func';
 import * as inventory from '../inventory/inv-setup';
-import { getUserRank } from '../steal/stealRanks';
+import { getUserRank } from './ranks';
 import obc from '../config/setup';
 
 obc.subcommand({ name: 'profile' }, async (profileC) => {
