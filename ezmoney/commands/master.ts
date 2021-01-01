@@ -5,6 +5,7 @@ import obc from '../config/setup';
 
 obc.raw('help', async (message) => {
   const cc = [
+    '`achievements`',
     '`bailout`',
     '`balance`',
     '`beg`',
@@ -13,7 +14,6 @@ obc.raw('help', async (message) => {
     '`daily`',
     '`gamble`',
     '`mine`',
-    '`ranks`',
     '`roll`',
     '`shop`',
     '`search`',
@@ -261,18 +261,10 @@ obc.raw({ name: 'bailout', aliases: ['bail'] }, async (message) => {
     );
 });
 
-obc.raw('ranks', async (message) => {
-  const ranks = def.standards.ranks;
-  let values = [];
-  for (const badges in ranks) {
-    const value = ranks[badges];
-    values.push(value);
-  }
+obc.raw({ name: 'achievements', aliases: ['badges'] }, async (message) => {
   await message.reply(
     new discord.Embed({
-      description: `Ranks are Earned by being successful in robbing users. \nThese Ranks show up on your profile card. \n\n${values.join(
-        '\n'
-      )}`,
+      description: `While using the bot, you can receive random Badges and Achievements. \nMost are secret. These show up on your profile card.`,
       color: def.standards.embeds.general
     })
   );

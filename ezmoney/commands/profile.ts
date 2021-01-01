@@ -2,10 +2,17 @@ import * as def from '../config/setup';
 import * as op from '../config/functions';
 import * as steal from '../steal/steal-func';
 import * as inventory from '../inventory/inv-setup';
-import { getUserRank } from './ranks';
+import { getRobRank, getGambleRank } from './ranks';
 import obc from '../config/setup';
 
+const getUserRanks = async (userId: discord.Snowflake) => {
+  const rob = await getRobRank(userId).then((rank) => rank.slice(2, -21));
+  const gamble = await getGambleRank(userId);
+  return [rob, gamble].join('');
+};
+
 obc.subcommand({ name: 'profile' }, async (profileC) => {
+  const flags = ['--achievements', '--gamble', '--help', '--rob', '--share'];
   profileC.default(
     (args) => ({ target: args.guildMemberOptional() }),
     async (message, { target }) => {
@@ -43,7 +50,7 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
           name: `${target.user.username}'s profile`,
           iconUrl: target.user.getAvatarUrl()
         })
-        .setDescription(`${await getUserRank(target.user.id)}`)
+        .setDescription(`${await getUserRanks(target.user.id)}`)
         .addField({
           name: 'Level',
           value: `**${userLevel}**\n${new Array(10)
@@ -107,13 +114,13 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
       await message.reply(embed);
     }
   );
-  profileC.raw({ name: '--help', aliases: ['--h'] }, async (message) => {
+  profileC.raw({ name: flags[2], aliases: ['--h'] }, async (message) => {
     await message.reply(`**Add flags to the command to see more advanced stats
-    Flags**: \`--gamble\`, \`--rob\`, \`--share\`
+    Flags**: ${flags.join(', ')}
     **Usage**: \`.profile --rob <@userOptional>\``);
   });
   profileC.on(
-    { name: '--gamble', aliases: ['--g'] },
+    { name: flags[1], aliases: ['--g'] },
     (a) => ({ target: a.guildMemberOptional() }),
     async (message, { target }) => {
       target = target || message.member;
@@ -154,7 +161,7 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
     }
   );
   profileC.on(
-    { name: '--rob', aliases: ['--steal', '--s', '--r'] },
+    { name: flags[3], aliases: ['--steal', '--s', '--r'] },
     (a) => ({ target: a.guildMemberOptional() }),
     async (message, { target }) => {
       target = target || message.member;
@@ -168,8 +175,8 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
         .setColor(def.standards.embeds.general)
         .setAuthor({ name: `${target.user.username}'s stealing stats` })
         .setDescription(
-          `${await getUserRank(
-            target.user.id
+          `${await getRobRank(target.user.id).then((rank) =>
+            rank.slice(0, -10)
           )} \nstats from the last \`${combined}\` steal attempts`
         )
         .addField({
@@ -203,7 +210,7 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
     }
   );
   profileC.on(
-    { name: '--share', aliases: ['--sh'] },
+    { name: flags[4], aliases: ['--sh'] },
     (a) => ({ target: a.guildMemberOptional() }),
     async (message, { target }) => {
       target = target || message.member;
@@ -221,6 +228,26 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
           name: `Amount Recieved`,
           value: `**${def.standards.currency}${amountRecieved}**`
         });
+      await message.reply(embed);
+    }
+  );
+  profileC.on(
+    { name: flags[0], aliases: ['--a', '--badges', '--b'] },
+    (a) => ({ target: a.guildMemberOptional() }),
+    async (message, { target }) => {
+      target = target || message.member;
+      const gGR = await getGambleRank(target.user.id);
+      const gamble = await op.getGained(target.user.id);
+      const embed = new discord.Embed();
+      embed
+        .setColor(def.standards.embeds.general)
+        .setAuthor({ name: `${target.user.username}'s Achievements` })
+        .setDescription(`${await getRobRank(target.user.id)}
+${gGR} ${
+        gamble > 49999
+          ? `**Gambler**\n• *gambled more than* **${def.standards.currency}50000**`
+          : ''
+      }`);
       await message.reply(embed);
     }
   );
