@@ -30,23 +30,26 @@ export const buildShopEmbed = async (
     ) {
       const amount = await inventory.getUserItems(message.author.id, name);
       return new discord.Embed({
-        title: `**${itemInfo.name}** ${
-          amount === 0 ? '' : `(${amount} owned)`
-        }`,
-        description: `**Type: \`${
-          itemInfo.itemType
-        }\`** \n\n${getObjectProperty(
+        title: `**${
+          inventory.nonShopItems.includes(name)
+            ? getObjectProperty(name, inventory.nonShopObjects)
+            : itemInfo.name
+        }** ${amount === 0 ? '' : `(${amount} owned)`}`,
+        description: `**Type: \`${getObjectProperty(
+          name,
+          inventory.hardItemTypes
+        )}\`** \n\n${getObjectProperty(
           name,
           inventory.extendDescriptions
         )} \n\n${[
           `**PRICE** - **${
-            name === Item.gemID
+            inventory.nonShopItems.includes(name)
               ? 'Cannot be Purchased'
               : `${def.standards.currency}${itemInfo.price}`
           }**`,
           `**SELLS** - **${def.standards.currency}${
-            name === Item.gemID
-              ? `${inventory.ItemConfig.gemPrice}`
+            inventory.nonShopItems.includes(name)
+              ? `${getObjectProperty(name, inventory.nonShopPrices)}`
               : `${Math.round(itemInfo.price / 10)}`
           }**`
         ].join('\n')}`,

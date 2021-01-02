@@ -165,6 +165,11 @@ export const itemConfig: Map<Item, ItemInfo> = new Map([
 ]);
 
 export const nonShopItems = [`${Item.gemID}`, `${Item.commonCrateID}`];
+export const nonShopObjects = { gem: 'Gem', common: 'Common Crate' };
+export const nonShopPrices = {
+  gem: ItemConfig.gemPrice,
+  common: ItemConfig.commonCratePrice
+};
 
 export const findItemByName = (name: string): ItemWithInfo | null => {
   name = name.toLowerCase();
