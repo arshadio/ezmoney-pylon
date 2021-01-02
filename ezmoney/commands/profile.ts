@@ -140,7 +140,8 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
         .setColor(def.standards.embeds.general)
         .setAuthor({ name: `${target.user.username}'s gambling stats` })
         .setDescription(
-          `${symbol} stats from the last \`${combined}\` games
+          `${await getGambleRank(target.user.id)} **Gambler**
+${symbol} stats from the last \`${combined}\` games
         ➜ includes **[coinflip, gamble, roll, slots]**`
         )
         .addField({
