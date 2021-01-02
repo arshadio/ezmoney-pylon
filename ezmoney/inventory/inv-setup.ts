@@ -91,13 +91,13 @@ export const enum Item {
 }
 
 // Item Specific Configuration
-export const enum ItemConfig {
-  mineUses = 3,
-  mineChance = 0.65,
-  lockPentalty = 250,
-  gemPrice = 50, //fix
-  commonCratePrice = 25
-}
+export const ItemConfig = {
+  mineUses: 3,
+  mineChance: 0.65,
+  lockPentalty: 250,
+  gemPrice: 50, //fix
+  commonCratePrice: 25
+};
 
 export const enum ItemTypes {
   Tool = 'Tool',
@@ -166,10 +166,6 @@ export const itemConfig: Map<Item, ItemInfo> = new Map([
 
 export const nonShopItems = [`${Item.gemID}`, `${Item.commonCrateID}`];
 export const nonShopObjects = { gem: 'Gem', common: 'Common Crate' };
-export const nonShopPrices = {
-  gem: ItemConfig.gemPrice,
-  common: ItemConfig.commonCratePrice
-};
 
 export const findItemByName = (name: string): ItemWithInfo | null => {
   name = name.toLowerCase();

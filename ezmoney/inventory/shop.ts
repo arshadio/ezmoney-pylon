@@ -49,7 +49,7 @@ export const buildShopEmbed = async (
           }**`,
           `**SELLS** - **${def.standards.currency}${
             inventory.nonShopItems.includes(name)
-              ? `${getObjectProperty(name, inventory.nonShopPrices)}`
+              ? `${getObjectProperty(name, inventory.ItemConfig)}`
               : `${Math.round(itemInfo.price / 10)}`
           }**`
         ].join('\n')}`,
