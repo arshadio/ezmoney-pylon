@@ -22,7 +22,7 @@ export interface IUserInventory extends pylon.JsonObject {
   life: number;
   pick: number;
   gem: number;
-  crate: number;
+  commonCrate: number;
   //equipped items
   lEquip: number;
   mEquip: number;
@@ -69,7 +69,7 @@ export const standards = {
     life: discord.decor.Emojis.HEART,
     pick: discord.decor.Emojis.PICK,
     gem: discord.decor.Emojis.GEM,
-    crate: '<:crate:760939184562503731>'
+    commonCrate: '<:crate:760939184562503731>'
   }
 };
 

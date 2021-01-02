@@ -15,17 +15,19 @@ obc.on(
     const userHearts = await inventory.getLives(target.user.id);
     const userPicks = await inventory.getPicks(target.user.id);
     const userGems = await inventory.getGems(target.user.id);
+    const userCommons = await inventory.getCommonCrates(target.user.id);
     const mapItems: Map<string, number> = new Map([
       [`**${def.standards.shopIcons.lock} Padlock:** `, userLocks],
       [`**${def.standards.shopIcons.mine} Landmine:** `, userMines],
       [`**${def.standards.shopIcons.life} Backup Heart:** `, userHearts],
       [`**${def.standards.shopIcons.pick} Pickaxe:** `, userPicks],
-      [`**${def.standards.shopIcons.gem} Gems:** `, userGems]
+      [`**${def.standards.shopIcons.gem} Gems:** `, userGems],
+      [`**${def.standards.shopIcons.commonCrate} Common Crates:**`, userCommons]
     ]);
     const inventoryWithItems = [];
     for (const [name, value] of mapItems.entries()) {
       if (value > 0) {
-        inventoryWithItems.push([name + `**\`${value}\`**`]);
+        inventoryWithItems.push([name + `**\`${value}\`**`], '');
       }
     }
     const embed = new discord.Embed();
@@ -44,7 +46,7 @@ obc.on(
   }
 );
 
-const nonBuyableItems = [`${inventory.Item.gemID}`];
+const nonBuyableItems = inventory.nonShopItems;
 
 obc.on(
   {

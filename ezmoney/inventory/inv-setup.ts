@@ -1,6 +1,7 @@
 import * as def from '../config/setup';
 import * as op from '../config/functions';
 import * as intoInventory from './func';
+import * as shop from './shop';
 import obc from '../config/setup';
 
 // functions to access the items in your inventory.
@@ -29,6 +30,13 @@ export async function getGems(userId: discord.Snowflake): Promise<number> {
   return userInv?.gem ?? 0;
 }
 
+export async function getCommonCrates(
+  userId: discord.Snowflake
+): Promise<number> {
+  const userInv = await def.userKV.get<def.IUserInventory>(userId);
+  return userInv?.commonCrate ?? 0;
+}
+
 export async function getLockEquipped(
   userId: discord.Snowflake
 ): Promise<number> {
@@ -55,18 +63,21 @@ export const enum Item {
   lifesaver = 'use this item to save yourself from dying!',
   pickaxe = 'use this item to mine and collect valuable resources.',
   gem = 'A valuable material that you can sell for profit.',
+  commonCrate = 'open this crate to get some basic rewards!',
   // names
   padlockName = 'Padlock',
   landmineName = 'Landmine',
   lifesaverName = 'Backup Heart',
   pickaxeName = 'Pickaxe',
   gemName = 'Gem',
+  commonCrateName = 'Common Crate',
   // ids
   padlockID = 'padlock',
   landmineID = 'landmine',
   lifesaverID = 'heart',
   pickaxeID = 'pickaxe',
   gemID = 'gem',
+  commonCrateID = 'common',
   // shortforms
   padlockSF = 'lock',
   landmineSF = 'mine',
@@ -84,13 +95,15 @@ export const enum ItemConfig {
   mineUses = 3,
   mineChance = 0.65,
   lockPentalty = 250,
-  gemPrice = 50 //fix
+  gemPrice = 50, //fix
+  commonCratePrice = 25
 }
 
 export const enum ItemTypes {
   Tool = 'Tool',
   Collectible = 'Collectible',
-  PowerUp = 'Power-Up'
+  PowerUp = 'Power-Up',
+  Crate = 'Crate'
 }
 
 export type ItemInfo = {
@@ -151,10 +164,12 @@ export const itemConfig: Map<Item, ItemInfo> = new Map([
   ]
 ]);
 
+export const nonShopItems = [`${Item.gemID}`, `${Item.commonCrateID}`];
+
 export const findItemByName = (name: string): ItemWithInfo | null => {
   name = name.toLowerCase();
   for (const [item, itemInfo] of itemConfig.entries()) {
-    if (name === Item.gemID) return { itemInfo, item };
+    if (nonShopItems.includes(name)) return { itemInfo, item };
     if (
       itemInfo.id.toLowerCase() === name ||
       itemInfo.shortform.toLowerCase() === name
@@ -204,7 +219,8 @@ export const extendDescriptions = {
     ItemConfig.mineUses
   }** uses.`,
   pickaxe: `Use the pickaxe alongside the \`mine\` command to harvest valuable **${def.standards.shopIcons.gem} Gem**s, which you can then sell for some profit!`,
-  gem: `**${def.standards.shopIcons.gem} Gem**s can be acquired by using the \`mine\` command. You can then sell these Gems for profit!`
+  gem: `**${def.standards.shopIcons.gem} Gem**s can be acquired by using the \`mine\` command. You can then sell these Gems for profit!`,
+  commonCrate: `Open a common crate to get some basic rewards!`
 };
 export const itemThumbnails = {
   padlock: 'https://images.emojiterra.com/twitter/512px/1f512.png',
@@ -212,19 +228,53 @@ export const itemThumbnails = {
   heart:
     'https://creazilla-store.fra1.digitaloceanspaces.com/emojis/54393/red-heart-emoji-clipart-md.png',
   pickaxe: 'https://images.emojiterra.com/twitter/v13.0/512px/26cf.png',
-  gem: 'https://images.emojiterra.com/twitter/v13.0/512px/1f48e.png'
+  gem: 'https://images.emojiterra.com/twitter/v13.0/512px/1f48e.png',
+  commonCrate: 'https://cdn.discordapp.com/emojis/760939184562503731.png?v=1'
 };
 // prettier-ignore
-export const hardItemTypes = { padlock: ItemTypes.Tool, landmine: ItemTypes.Tool, heart: ItemTypes.PowerUp, pickaxe: ItemTypes.Tool, gem: ItemTypes.Collectible };
-const getUserItems = async (userId: discord.Snowflake) => {};
+export const hardItemTypes = { padlock: ItemTypes.Tool, landmine: ItemTypes.Tool, heart: ItemTypes.PowerUp, pickaxe: ItemTypes.Tool, gem: ItemTypes.Collectible, commonCrate: ItemTypes.Crate };
+export const getUserItems = async (
+  userId: discord.Snowflake,
+  input: string
+) => {
+  const obj = {
+    padlock: await getLocks(userId),
+    landmine: await getMines(userId),
+    pickaxe: await getPicks(userId),
+    heart: await getLives(userId),
+    gem: await getGems(userId),
+    commonCrate: await getCommonCrates(userId)
+  };
+  const fetch = shop.getObjectProperty(input, obj);
+  if (fetch === undefined) return 'unknown value';
+  return fetch;
+};
 
 export const purchaseItem = async (
   userId: discord.Snowflake,
   shopItem: string,
+  message: discord.Message,
   count: number
 ) => {
   shopItem = shopItem.toLowerCase();
   const userBalance = await op.getBalance(userId);
+  for (const [item, itemInfo] of itemConfig.entries()) {
+    if (
+      itemInfo.id.toLowerCase() === shopItem ||
+      itemInfo.shortform.toLowerCase() === shopItem
+    ) {
+      const transaction = itemInfo.price * count;
+      if (userBalance < transaction) return 'not enough coins.';
+      // const complete = await op.incrementBalance(userId, -transaction);
+      await intoInventory.confirmPurchase(
+        count,
+        shopItem,
+        message,
+        transaction
+      );
+    }
+  }
+  return null;
 };
 
 export async function buyItem(
@@ -304,6 +354,7 @@ export async function sellItem(
   const userLives = await getLives(userId);
   const userPicks = await getPicks(userId);
   const userGems = await getGems(userId);
+  const userCommonCrates = await getCommonCrates(userId);
   const sItem = shopItem.toLowerCase();
   switch (sItem) {
     case Item.padlockID:
@@ -380,6 +431,19 @@ export async function sellItem(
         true
       );
       break;
+    case Item.commonCrateID:
+      if (count > userCommonCrates)
+        return message.reply(`You don't have that many Common Crates!`);
+      const cCrateSell = ItemConfig.commonCratePrice * count;
+      await op.incrementBalance(userId, cCrateSell);
+      await intoInventory.incrementCommonsInInventory(userId, -count);
+      await intoInventory.confirmPurchase(
+        count,
+        shopItem,
+        message,
+        ItemConfig.commonCratePrice,
+        true
+      );
   }
 }
 

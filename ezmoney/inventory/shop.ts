@@ -17,16 +17,22 @@ export const getObjectProperty = (name: string, obj: object) => {
   }
 };
 
-export const buildShopEmbed = (name: string): discord.Embed => {
+export const buildShopEmbed = async (
+  name: string,
+  message: discord.Message
+): Promise<discord.Embed> => {
   name = name.toLowerCase();
   for (const [item, itemInfo] of inventory.itemConfig.entries()) {
     if (
       itemInfo.id.toLowerCase() === name ||
       itemInfo.shortform.toLowerCase() === name ||
-      name === Item.gemID
+      inventory.nonShopItems.includes(name)
     ) {
+      const amount = await inventory.getUserItems(message.author.id, name);
       return new discord.Embed({
-        title: `**${itemInfo.name}**`,
+        title: `**${itemInfo.name}** ${
+          amount === 0 ? '' : `(${amount} owned)`
+        }`,
         description: `**Type: \`${
           itemInfo.itemType
         }\`** \n\n${getObjectProperty(
@@ -72,7 +78,7 @@ obc.subcommand('shop', async (shopCommands) => {
         await message.reply(embed);
       } else {
         const auditItem = shopItem.toLowerCase();
-        await message.reply(buildShopEmbed(auditItem));
+        await message.reply(buildShopEmbed(auditItem, message));
       }
     }
   );

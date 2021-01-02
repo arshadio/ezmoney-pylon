@@ -118,6 +118,23 @@ export async function incrementGemsInInventory(
   );
 }
 
+export async function incrementCommonsInInventory(
+  userId: discord.Snowflake,
+  by: number = 1
+) {
+  const transact = await def.userKV.transact<def.IUserInventory>(
+    userId,
+    (prev) => {
+      if (prev)
+        return {
+          ...prev,
+          commonCrate: (prev.commonCrate ?? 0) + by
+        };
+      return { commonCrate: by }
+    }
+  )
+}
+
 export async function changedLockEquip(
   userId: discord.Snowflake,
   by: number = 1
