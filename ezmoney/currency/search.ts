@@ -7,6 +7,9 @@ import { Handler } from '../config/awaiter';
 import obc from '../config/setup';
 
 const handler = new Handler();
+const defMsg = (choice: string) => {
+  return `**you searched \`${choice.toUpperCase()}\`**`;
+};
 
 // setup
 const SEARCH_CHOICES = {
@@ -27,7 +30,7 @@ obc.raw('search', async (message) => {
   if (lastSearch) return message.reply(cooldownmsg);
   const successRate = Math.random();
   const badReward = 0;
-  const badChance = 0.8;
+  const badChance = 0.84;
   const randomReward = Math.ceil(Math.random() * 95 + 1);
   let attempts = 0;
   const choiceOne = op.randomizer(SEARCH_CHOICES.ONE);
@@ -51,6 +54,36 @@ obc.raw('search', async (message) => {
       attempts++;
       if (choice === choiceOne && attempts <= 1) {
         if (
+          choiceOne === SEARCH_CHOICES.ONE[0] &&
+          choice === choiceOne &&
+          successRate <= 0.2
+        ) {
+          if (bal < 250)
+            return message.reply(
+              `${defMsg(
+                choice
+              )} \nyou were caught! The police let you go with a warning.`
+            );
+          await op.incrementBalance(message.author.id, -250);
+          return message.reply(
+            `${defMsg(choice)} \nyou were caught! You had to pay **${
+              def.standards.currency
+            }250** for your bail.`
+          );
+        }
+        if (
+          choiceOne === SEARCH_CHOICES.ONE[0] &&
+          choice === choiceOne &&
+          successRate >= 0.75
+        ) {
+          const newReward = randomReward + 165;
+          await op.incrementBalance(message.author.id, newReward);
+          return message.reply(`${defMsg(choice)} and got some good loot! ${
+            discord.decor.Emojis.MONEYBAG
+          }
+You found **${def.standards.currency}${newReward}**`);
+        }
+        if (
           choiceOne === SEARCH_CHOICES.ONE[1] &&
           choice === choiceOne &&
           successRate <= 0.12
@@ -62,9 +95,9 @@ obc.raw('search', async (message) => {
           if (userLives >= 1)
             await invfunc.incrementLivesInInventory(message.author.id, -1);
           return message.reply(
-            `**you searched: \`${choice.toUpperCase()}\`** and picked up a rare disease. \n${
+            `${defMsg(choice)} and picked up a rare disease. \n${
               userLives >= 1
-                ? `You would have lost all your coins, but luckily you had a **${def.standards.shopIcons.life} Backup Heart in your inventory!**`
+                ? `You would have lost all your coins, but luckily you had a **${def.standards.shopIcons.life} Backup Heart** in your inventory!`
                 : 'You died.'
             }`
           );
@@ -77,7 +110,7 @@ obc.raw('search', async (message) => {
           await op.incrementBalance(message.author.id, 75);
           await invfunc.incrementLivesInInventory(message.author.id, 1);
           return message.reply(
-            `**you searched: \`${choice.toUpperCase()}\`** and found **${
+            `${defMsg(choice)} and found **${
               def.standards.currency
             }75** and a **${def.standards.shopIcons.life} Backup Heart!**`
           );
@@ -90,7 +123,7 @@ obc.raw('search', async (message) => {
           await op.incrementBalance(message.author.id, randomReward);
           await invfunc.incrementCommonsInInventory(message.author.id);
           return message.reply(
-            `**you searched \`${choice.toUpperCase()}\`** and found **${
+            `*${defMsg(choice)} and found **${
               def.standards.currency
             }${randomReward}** and a **${
               def.standards.shopIcons.commonCrate
@@ -104,11 +137,15 @@ obc.raw('search', async (message) => {
         ) {
           if (bal < 250)
             return message.reply(
-              `you were caught by the police for trespassing but were let go.`
+              `${defMsg(
+                choice
+              )} \nyou were caught! The police let you go with a warning.`
             );
           await op.incrementBalance(message.author.id, -250);
           return message.reply(
-            `you were caught by the police for trespassing. You were forced to pay **${def.standards.currency}250** as part of your bail.`
+            `${defMsg(choice)} \nyou were caught!. You were forced to pay **${
+              def.standards.currency
+            }250** as part of your bail.`
           );
         }
         const success = await op.incrementBalance(
@@ -116,9 +153,9 @@ obc.raw('search', async (message) => {
           successRate >= badChance ? badReward : randomReward
         );
         await message.reply(
-          `**you searched: \`${choice.toUpperCase()}\`** and found **${
-            def.standards.currency
-          }${successRate >= badChance ? badReward : randomReward}**`
+          `${defMsg(choice)} and found **${def.standards.currency}${
+            successRate >= badChance ? badReward : randomReward
+          }**`
         );
         msgHandler.done();
       } else if (choice === choiceTwo && attempts <= 1) {
@@ -127,9 +164,9 @@ obc.raw('search', async (message) => {
           successRate >= badChance ? badReward : randomReward
         );
         await message.reply(
-          `**you searched: \`${choice.toUpperCase()}\`** and found **${
-            def.standards.currency
-          }${successRate >= badChance ? badReward : randomReward}**`
+          `${defMsg(choice)} and found **${def.standards.currency}${
+            successRate >= badChance ? badReward : randomReward
+          }**`
         );
         msgHandler.done();
       } else if (choice === choiceThree && attempts <= 1) {
@@ -138,9 +175,9 @@ obc.raw('search', async (message) => {
           successRate >= badChance ? badReward : randomReward
         );
         await message.reply(
-          `**you searched: \`${choice.toUpperCase()}\`** and found **${
-            def.standards.currency
-          }${successRate >= badChance ? badReward : randomReward}**`
+          `${defMsg(choice)} and found **${def.standards.currency}${
+            successRate >= badChance ? badReward : randomReward
+          }**`
         );
         msgHandler.done();
       }
