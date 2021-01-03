@@ -10,7 +10,7 @@ const handler = new Handler();
 
 // setup
 const SEARCH_CHOICES = {
-  ONE: ['car', 'hospital', 'pocket'],
+  ONE: ['car', 'hospital', 'pocket', 'warehouse'],
   TWO: ['playground', 'drawer', 'bathtub', 'phone'],
   THREE: ['jacket', 'station', 'restaurant', 'house']
 };
@@ -80,6 +80,35 @@ obc.raw('search', async (message) => {
             `**you searched: \`${choice.toUpperCase()}\`** and found **${
               def.standards.currency
             }75** and a **${def.standards.shopIcons.life} Backup Heart!**`
+          );
+        }
+        if (
+          choiceOne === SEARCH_CHOICES.ONE[3] &&
+          choice === choiceOne &&
+          successRate >= 0.6
+        ) {
+          await op.incrementBalance(message.author.id, randomReward);
+          await invfunc.incrementCommonsInInventory(message.author.id);
+          return message.reply(
+            `**you searched \`${choice.toUpperCase()}\`** and found **${
+              def.standards.currency
+            }${randomReward}** and a **${
+              def.standards.shopIcons.commonCrate
+            } Common Crate!**`
+          );
+        }
+        if (
+          choiceOne === SEARCH_CHOICES.ONE[3] &&
+          choice === choiceOne &&
+          successRate <= 0.12
+        ) {
+          if (bal < 250)
+            return message.reply(
+              `you were caught by the police for trespassing but were let go.`
+            );
+          await op.incrementBalance(message.author.id, -250);
+          return message.reply(
+            `you were caught by the police for trespassing. You were forced to pay **${def.standards.currency}250** as part of your bail.`
           );
         }
         const success = await op.incrementBalance(

@@ -22,7 +22,7 @@ obc.on(
       [`**${def.standards.shopIcons.life} Backup Heart:** `, userHearts],
       [`**${def.standards.shopIcons.pick} Pickaxe:** `, userPicks],
       [`**${def.standards.shopIcons.gem} Gems:** `, userGems],
-      [`**${def.standards.shopIcons.commonCrate} Common Crates:**`, userCommons]
+      [`**${def.standards.shopIcons.commonCrate} Common Crate:** `, userCommons]
     ]);
     const inventoryWithItems = [];
     for (const [name, value] of mapItems.entries()) {
