@@ -136,7 +136,7 @@ You found **${def.standards.currency}${newReward}**`);
           await op.incrementBalance(message.author.id, randomReward);
           await invfunc.incrementCommonsInInventory(message.author.id);
           return message.reply(
-            `*${defMsg(choice)} and found **${
+            `${defMsg(choice)} and found **${
               def.standards.currency
             }${randomReward}** and a **${
               def.standards.shopIcons.commonCrate
@@ -183,6 +183,36 @@ You found **${def.standards.currency}${newReward}**`);
         );
         msgHandler.done();
       } else if (choice === choiceThree && attempts <= 1) {
+        if (
+          choiceOne === SEARCH_CHOICES.THREE[1] &&
+          choice === choiceOne &&
+          successRate <= 0.25
+        ) {
+          if (bal < 250)
+            return message.reply(
+              `${defMsg(
+                choice
+              )} \nyou were caught! The police let you go with a warning.`
+            );
+          await op.incrementBalance(message.author.id, -250);
+          await message.reply(
+            `${defMsg(choice)} \nyou were caught!. You were forced to pay **${
+              def.standards.currency
+            }250** as part of your bail.`
+          );
+        }
+        if (
+          choiceOne === SEARCH_CHOICES.THREE[1] &&
+          choice === choiceOne &&
+          successRate >= 0.75
+        ) {
+          const newReward = randomReward + 200;
+          await op.incrementBalance(message.author.id, newReward);
+          return message.reply(`${defMsg(choice)} and got some good loot! ${
+            discord.decor.Emojis.MONEYBAG
+          }
+You found **${def.standards.currency}${newReward}**`);
+        }
         const success = await op.incrementBalance(
           message.author.id,
           successRate >= badChance ? badReward : randomReward
