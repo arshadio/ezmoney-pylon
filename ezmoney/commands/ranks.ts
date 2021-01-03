@@ -1,4 +1,5 @@
 import { standards as config } from '../config/setup';
+import * as inventory from '../inventory/inv-setup';
 import * as steal from '../steal/steal-func';
 import * as def from '../config/functions';
 
@@ -37,4 +38,21 @@ export async function getGambleRank(userId: discord.Snowflake) {
   const userGambleRewards = await def.getGained(userId);
   const currentRank = gambleRanks(userGambleRewards);
   if (currentRank) return `${currentRank}`;
+}
+
+export async function getInventoryRank(userId: discord.Snowflake) {
+  let rank = '_ _';
+  const toPush = [];
+  const iterate = [
+    await inventory.getUserItems(userId, 'lock'),
+    await inventory.getUserItems(userId, 'mine'),
+    await inventory.getUserItems(userId, 'pick'),
+    await inventory.getUserItems(userId, 'heart'),
+    await inventory.getUserItems(userId, 'gem'),
+    await inventory.getUserItems(userId, 'common')
+  ];
+  for (const [name, value] of iterate.entries())
+    if (value > 0) toPush.push(value);
+  if (toPush.length === iterate.length) rank = `${config.ranks.merchant}`;
+  return rank;
 }

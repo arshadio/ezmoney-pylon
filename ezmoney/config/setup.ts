@@ -61,7 +61,8 @@ export const standards = {
     s1: '**<:silver1:737395207208960081> Silver I** (5 wins)',
     s2: '**<:silver2:737395651624829019> Silver II** (10 wins)',
     s3: '**<:silver3:737395711150260225> Silver III** (20 wins)',
-    gambler: '<:gambler:794028886848569354>'
+    gambler: '<:gambler:794028886848569354>',
+    merchant: ' <:merchant:795425671261978664>'
   },
   shopIcons: {
     lock: discord.decor.Emojis.LOCK,

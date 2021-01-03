@@ -2,13 +2,14 @@ import * as def from '../config/setup';
 import * as op from '../config/functions';
 import * as steal from '../steal/steal-func';
 import * as inventory from '../inventory/inv-setup';
-import { getRobRank, getGambleRank } from './ranks';
+import { getRobRank, getGambleRank, getInventoryRank } from './ranks';
 import obc from '../config/setup';
 
 const getUserRanks = async (userId: discord.Snowflake) => {
   const rob = await getRobRank(userId).then((rank) => rank.slice(2, -21));
   const gamble = await getGambleRank(userId);
-  return [rob, gamble].join('');
+  const inventory = await getInventoryRank(userId);
+  return [rob, gamble, inventory].join('');
 };
 
 obc.subcommand({ name: 'profile' }, async (profileC) => {
@@ -249,6 +250,11 @@ ${symbol} stats from the last \`${combined}\` games
 ${gGR} ${
         gamble > 49999
           ? `**Gambler**\n• *gambled more than* **${def.standards.currency}50000**`
+          : ''
+      }
+${await getInventoryRank(target.user.id)} ${
+        (await getInventoryRank(target.user.id)) !== '_ _'
+          ? `**Merchant**\n• *Have all possible items in inventory*`
           : ''
       }`);
       await message.reply(embed);
