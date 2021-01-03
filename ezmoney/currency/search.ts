@@ -105,6 +105,19 @@ You found **${def.standards.currency}${newReward}**`);
         if (
           choiceOne === SEARCH_CHOICES.ONE[1] &&
           choice === choiceOne &&
+          successRate > 0.2 &&
+          successRate < 0.45
+        ) {
+          const newReward = randomReward + 200;
+          await op.incrementBalance(message.author.id, newReward);
+          return message.reply(`${defMsg(choice)} and got some good loot! ${
+            discord.decor.Emojis.MONEYBAG
+          }
+You found **${def.standards.currency}${newReward}**`);
+        }
+        if (
+          choiceOne === SEARCH_CHOICES.ONE[1] &&
+          choice === choiceOne &&
           successRate >= 0.8
         ) {
           await op.incrementBalance(message.author.id, 75);
