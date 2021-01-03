@@ -349,6 +349,7 @@ export async function useItem(
   const equippedLock = await getLockEquipped(userId);
   const mines = await getMines(userId);
   const equippedMine = await getMineEquipped(userId);
+  const commonCrates = await getCommonCrates(userId);
   const iItem = inventoryItem.toLowerCase();
   switch (iItem) {
     case Item.padlockID:
@@ -376,5 +377,19 @@ export async function useItem(
         `You put down a **${def.standards.shopIcons.mine} Landmine**. 3 people who try to steal from you have a chance of dying and losing all their coins.`
       );
       break;
+    case Item.commonCrateID:
+      if (commonCrates === 0)
+        return message.reply(`You don't have that item in your inventory!`);
+      const randomReward = Math.ceil(Math.random() * 60 + 30);
+      await intoInventory.incrementCommonsInInventory(userId, -1);
+      const reply = await message
+        .inlineReply(`**opening your crate...**`)
+        .then(async (msg) => {
+          await sleep(1975);
+          msg.edit(
+            `**good haul, you got ${def.standards.currency}${randomReward} from your crate**`
+          );
+        });
+      await op.incrementBalance(userId, randomReward);
   }
 }
