@@ -66,7 +66,7 @@ obc.on(
         allowedMentions: {}
       });
     }
-    await inventory.buyItem(message.author.id, shopItem, message, count);
+    await inventory.purchaseItem(message.author.id, shopItem, message, count);
   }
 );
 

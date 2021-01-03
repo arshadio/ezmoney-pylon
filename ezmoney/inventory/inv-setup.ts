@@ -234,6 +234,7 @@ export const itemThumbnails = {
 };
 // prettier-ignore
 export const hardItemTypes = { padlock: ItemTypes.Tool, landmine: ItemTypes.Tool, heart: ItemTypes.PowerUp, pickaxe: ItemTypes.Tool, gem: ItemTypes.Collectible, commonCrate: ItemTypes.Crate };
+
 export const getUserItems = async (
   userId: discord.Snowflake,
   input: string
@@ -259,88 +260,35 @@ export const purchaseItem = async (
 ) => {
   shopItem = shopItem.toLowerCase();
   const userBalance = await op.getBalance(userId);
+  let transaction = 0;
   for (const [item, itemInfo] of itemConfig.entries()) {
     if (
       itemInfo.id.toLowerCase() === shopItem ||
       itemInfo.shortform.toLowerCase() === shopItem
     ) {
-      const transaction = itemInfo.price * count;
-      if (userBalance < transaction) return 'not enough coins.';
-      // const complete = await op.incrementBalance(userId, -transaction);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        transaction
-      );
+      transaction = itemInfo.price * count;
+      if (userBalance < transaction) return message.reply('not enough coins.');
     }
   }
-  return null;
-};
-
-export async function buyItem(
-  userId: discord.Snowflake,
-  shopItem: string,
-  message: discord.Message,
-  count: number
-) {
-  const balance = await op.getBalance(userId);
-  const sItem = shopItem.toLowerCase();
-  switch (sItem) {
-    case Item.padlockID:
-    case Item.padlockSF:
-      if (balance < Item.padlockPrice * count)
-        return message.reply(`You don't have that many coins!`);
-      await op.incrementBalance(userId, -(Item.padlockPrice * count));
+  const complete = await op.incrementBalance(userId, -transaction);
+  // iterate thru items to find match
+  switch (true) {
+    case shopItem === Item.padlockID || shopItem === Item.padlockSF:
       await intoInventory.incrementLocksInInventory(userId, count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.padlockPrice
-      );
       break;
-    case Item.landmineID:
-    case Item.landmineSF:
-      if (balance < Item.landminePrice * count)
-        return message.reply(`You don't have that many coins!`);
-      await op.incrementBalance(userId, -(Item.landminePrice * count));
+    case shopItem === Item.landmineID || shopItem === Item.landmineSF:
       await intoInventory.incrementMinesInInventory(userId, count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.landminePrice
-      );
       break;
-    case Item.lifesaverID:
-    case Item.lifesaverSF:
-      if (balance < Item.lifesaverPrice * count)
-        return message.reply(`You don't have that many coins!`);
-      await op.incrementBalance(userId, -(Item.lifesaverPrice * count));
+    case shopItem === Item.lifesaverID || shopItem === Item.lifesaverSF:
       await intoInventory.incrementLivesInInventory(userId, count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.lifesaverPrice
-      );
       break;
-    case Item.pickaxeID:
-    case Item.pickaxeSF:
-      if (balance < Item.pickaxePrice * count)
-        return message.reply(`You don't have that many coins!`);
-      await op.incrementBalance(userId, -(Item.pickaxePrice * count));
+    case shopItem === Item.pickaxeID || shopItem === Item.pickaxeSF:
       await intoInventory.incrementPicksInInventory(userId, count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.pickaxePrice
-      );
       break;
   }
-}
+  await intoInventory.confirmPurchase(count, shopItem, message, transaction);
+  // prettier-ignore
+};
 
 export const SellItem = async (
   userId: discord.Snowflake,
