@@ -342,111 +342,55 @@ export async function buyItem(
   }
 }
 
-export async function sellItem(
+export const SellItem = async (
   userId: discord.Snowflake,
   shopItem: string,
-  message: discord.Message,
-  count: number
-) {
-  // grab information
-  const balance = await op.getBalance(userId);
-  const userLocks = await getLocks(userId);
-  const userMines = await getMines(userId);
-  const userLives = await getLives(userId);
-  const userPicks = await getPicks(userId);
-  const userGems = await getGems(userId);
-  const userCommonCrates = await getCommonCrates(userId);
-  const sItem = shopItem.toLowerCase();
-  switch (sItem) {
-    case Item.padlockID:
-    case Item.padlockSF:
-      if (count > userLocks)
-        return message.reply(`You don't have that many Padlocks!`);
-      const lockSell = (Item.padlockPrice * count) / 10;
-      await op.incrementBalance(userId, lockSell);
-      await intoInventory.incrementLocksInInventory(userId, -count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.padlockPrice,
-        true
-      );
-      break;
-    case Item.landmineID:
-    case Item.landmineSF:
-      if (count > userMines)
-        return message.reply(`You don't have that many Landmines!`);
-      const mineSell = (Item.landminePrice * count) / 10;
-      await op.incrementBalance(userId, mineSell);
-      await intoInventory.incrementMinesInInventory(userId, -count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.landminePrice,
-        true
-      );
-      break;
-    case Item.lifesaverID:
-    case Item.lifesaverSF:
-      if (count > userLives)
-        return message.reply(`You don't have that many Backup Hearts!`);
-      const lifeSell = (Item.lifesaverPrice * count) / 10;
-      await op.incrementBalance(userId, lifeSell);
-      await intoInventory.incrementLivesInInventory(userId, -count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.lifesaverPrice,
-        true
-      );
-      break;
-    case Item.pickaxeID:
-    case Item.pickaxeSF:
-      if (count > userPicks)
-        return message.reply(`You don't have that many Pickaxes!`);
-      const pickSell = (Item.pickaxePrice * count) / 10;
-      await op.incrementBalance(userId, pickSell);
-      await intoInventory.incrementPicksInInventory(userId, -count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        Item.pickaxePrice,
-        true
-      );
-      break;
-    case Item.gemID:
-      if (count > userGems)
-        return message.reply(`You don't have that many Gems!`);
-      const gemSell = ItemConfig.gemPrice * count;
-      await op.incrementBalance(userId, gemSell);
-      await intoInventory.incrementGemsInInventory(userId, -count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        ItemConfig.gemPrice,
-        true
-      );
-      break;
-    case Item.commonCrateID:
-      if (count > userCommonCrates)
-        return message.reply(`You don't have that many Common Crates!`);
-      const cCrateSell = ItemConfig.commonCratePrice * count;
-      await op.incrementBalance(userId, cCrateSell);
-      await intoInventory.incrementCommonsInInventory(userId, -count);
-      await intoInventory.confirmPurchase(
-        count,
-        shopItem,
-        message,
-        ItemConfig.commonCratePrice,
-        true
-      );
+  count: number,
+  message: discord.Message
+) => {
+  const caseItem = shopItem.toLowerCase();
+  const isInInventory = await getUserItems(userId, caseItem);
+  if (count === 0) return message.reply("can't sell 0 items");
+  if (isInInventory === 0) return message.reply('not in inventory');
+  if (count > isInInventory) return message.reply(`don't have that many`);
+  let totalPrice = 0;
+  // calc price
+  for (const [item, itemInfo] of itemConfig.entries()) {
+    if (
+      itemInfo.id.toLowerCase() === caseItem ||
+      itemInfo.shortform.toLowerCase() === caseItem
+    )
+      totalPrice = (itemInfo.price * count) / 10;
+    else if (nonShopItems.includes(shopItem)) {
+      const getPrice = shop.getObjectProperty(shopItem, ItemConfig);
+      totalPrice = getPrice * count;
+    }
   }
-}
+  await op.incrementBalance(userId, totalPrice);
+  // iterate thru items to find match
+  switch (true) {
+    case shopItem === Item.padlockID || shopItem === Item.padlockSF:
+      await intoInventory.incrementLocksInInventory(userId, -count);
+      break;
+    case shopItem === Item.landmineID || shopItem === Item.landmineSF:
+      await intoInventory.incrementMinesInInventory(userId, -count);
+      break;
+    case shopItem === Item.lifesaverID || shopItem === Item.lifesaverSF:
+      await intoInventory.incrementLivesInInventory(userId, -count);
+      break;
+    case shopItem === Item.pickaxeID || shopItem === Item.pickaxeSF:
+      await intoInventory.incrementPicksInInventory(userId, -count);
+      break;
+    case shopItem === Item.gemID:
+      await intoInventory.incrementGemsInInventory(userId, -count);
+      break;
+    case shopItem === Item.commonCrateID:
+      await intoInventory.incrementCommonsInInventory(userId, -count);
+      break;
+  }
+  await intoInventory.confirmPurchase(count, shopItem, message, totalPrice, true);
+  // prettier-ignore
+};
 
 export async function useItem(
   userId: discord.Snowflake,

@@ -85,7 +85,7 @@ obc.on(
         allowedMentions: {}
       });
     }
-    await inventory.sellItem(message.author.id, shopItem, message, count);
+    await inventory.SellItem(message.author.id, shopItem, count, message);
   }
 );
 

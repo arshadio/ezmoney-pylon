@@ -1,6 +1,7 @@
 import * as def from '../config/setup';
 import * as inventory from './inv-setup';
 import * as op from '../config/functions';
+import { getObjectProperty as find } from './shop';
 import obc from '../config/setup';
 
 export async function confirmPurchase(
@@ -22,13 +23,7 @@ export async function confirmPurchase(
         sold === true ? 'sold' : 'bought'
       } **${count} ${itemName}${count === 1 ? '' : 's'}** and ${
         sold === true ? 'recieved' : 'paid'
-      } **${def.standards.currency}${
-        sold === true
-          ? itemName === inventory.Item.gemID
-            ? price * count
-            : (price * count) / 10
-          : price * count
-      }**`
+      } **${def.standards.currency}${sold === true ? price : price * count}**`
     );
   await message.reply(embed);
 }
@@ -130,9 +125,9 @@ export async function incrementCommonsInInventory(
           ...prev,
           commonCrate: (prev.commonCrate ?? 0) + by
         };
-      return { commonCrate: by }
+      return { commonCrate: by };
     }
-  )
+  );
 }
 
 export async function changedLockEquip(
