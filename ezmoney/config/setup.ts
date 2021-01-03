@@ -46,7 +46,7 @@ export const standards = {
   REWARDS: {
     DAILY_REWARD: 150,
     WEEKLY_REWARD: 1100,
-    BAILOUT_REWARD: 500
+    BAILOUT_REWARD: 250
   },
   TIMERS: {
     WEEKLY_INTERVAL: 168 * 60 * 60 * 1000,
