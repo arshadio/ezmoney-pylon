@@ -96,7 +96,7 @@ export const ItemConfig = {
   mineChance: 0.65,
   lockPentalty: 250,
   gemPrice: 50, //fix
-  commonCratePrice: 25
+  commonCratePrice: 50
 };
 
 export const enum ItemTypes {

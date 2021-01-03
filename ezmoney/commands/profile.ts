@@ -33,16 +33,18 @@ obc.subcommand({ name: 'profile' }, async (profileC) => {
       const lives = await inventory.getLives(target.user.id);
       const picks = await inventory.getPicks(target.user.id);
       const gems = await inventory.getGems(target.user.id);
+      const commonCrates = await inventory.getCommonCrates(target.user.id);
       const equippedLock = await inventory.getLockEquipped(target.user.id);
       const equippedMines = await inventory.getMineEquipped(target.user.id);
       const mineUses = await inventory.getMineUses(target.user.id);
-      const totalInInv = locks + mines + lives + picks + gems;
+      const totalInInv = locks + mines + lives + picks + gems + commonCrates;
       const valueOfInv =
         inventory.Item.padlockPrice * locks +
         inventory.Item.landminePrice * mines +
         inventory.Item.lifesaverPrice * lives +
         inventory.Item.pickaxePrice * picks +
-        inventory.ItemConfig.gemPrice * gems;
+        inventory.ItemConfig.gemPrice * gems +
+        inventory.ItemConfig.commonCratePrice * commonCrates;
       const embed = new discord.Embed();
       embed
         .setColor(def.standards.embeds.general)

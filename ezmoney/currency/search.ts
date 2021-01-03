@@ -8,7 +8,7 @@ import obc from '../config/setup';
 
 const handler = new Handler();
 const defMsg = (choice: string) => {
-  return `**you searched \`${choice.toUpperCase()}\`**`;
+  return `**you searched: \`${choice.toUpperCase()}\`**`;
 };
 
 // setup
