@@ -10,7 +10,7 @@ const robRanks = (rank: number) => {
     default:
       return `_ _`;
     case rank > 4 && rank < 10:
-      return `${config.ranks.s1}`;
+      return `${config.ranks.s1} `;
       break;
     case rank < 20 && rank > 9:
       return `${config.ranks.s2}`;
