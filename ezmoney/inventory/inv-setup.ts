@@ -355,31 +355,37 @@ export async function useItem(
     case Item.padlockID:
     case Item.padlockSF:
       if (locks === 0)
-        return message.reply(`You don't have that item in your inventory!`);
+        return message.inlineReply(
+          `You don't have that item in your inventory!`
+        );
       if (equippedLock > 0)
-        return message.reply(`You already have that item equipped!`);
+        return message.inlineReply(`You already have that item equipped!`);
       await intoInventory.incrementLocksInInventory(userId, -1);
       await intoInventory.changedLockEquip(userId);
-      await message.reply(
+      await message.inlineReply(
         `You equipped a **${def.standards.shopIcons.lock} Padlock**. Anyone who tries to steal from you will automatically fail, however this is only a one-time use.`
       );
       break;
     case Item.landmineID:
     case Item.landmineSF:
       if (mines === 0)
-        return message.reply(`You don't have that item in your inventory!`);
+        return message.inlineReply(
+          `You don't have that item in your inventory!`
+        );
       if (equippedMine > 0)
-        return message.reply(`You already have that item equipped!`);
+        return message.inlineReply(`You already have that item equipped!`);
       await intoInventory.incrementMinesInInventory(userId, -1);
       await intoInventory.changeMineEquip(userId);
       await intoInventory.resetMineUses(userId);
-      await message.reply(
+      await message.inlineReply(
         `You put down a **${def.standards.shopIcons.mine} Landmine**. 3 people who try to steal from you have a chance of dying and losing all their coins.`
       );
       break;
     case Item.commonCrateID:
       if (commonCrates === 0)
-        return message.reply(`You don't have that item in your inventory!`);
+        return message.inlineReply(
+          `You don't have that item in your inventory!`
+        );
       const randomReward = Math.ceil(Math.random() * 60 + 30);
       await intoInventory.incrementCommonsInInventory(userId, -1);
       const reply = await message
