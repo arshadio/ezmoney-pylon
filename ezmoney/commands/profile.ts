@@ -6,7 +6,9 @@ import { getRobRank, getGambleRank, getInventoryRank } from './ranks';
 import obc from '../config/setup';
 
 const getUserRanks = async (userId: discord.Snowflake) => {
-  const rob = await getRobRank(userId).then((rank) => rank.slice(2, -21));
+  const rob = await getRobRank(userId).then((rank) =>
+  rank.slice(2, rank === def.standards.ranks.s3 ? -22 : -21)
+  );
   const gamble = await getGambleRank(userId);
   const inventory = await getInventoryRank(userId);
   return [rob, gamble, inventory].join('');
