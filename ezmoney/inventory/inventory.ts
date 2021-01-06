@@ -10,19 +10,15 @@ obc.on(
   (a) => ({ target: a.guildMemberOptional() }),
   async (message, { target }) => {
     target = target || message.member;
-    const userLocks = await inventory.getLocks(target.user.id);
-    const userMines = await inventory.getMines(target.user.id);
-    const userHearts = await inventory.getLives(target.user.id);
-    const userPicks = await inventory.getPicks(target.user.id);
-    const userGems = await inventory.getGems(target.user.id);
-    const userCommons = await inventory.getCommonCrates(target.user.id);
+    const tid = target.user.id;
+    // prettier-ignore
     const mapItems: Map<string, number> = new Map([
-      [`**${def.standards.shopIcons.lock} Padlock:** `, userLocks],
-      [`**${def.standards.shopIcons.mine} Landmine:** `, userMines],
-      [`**${def.standards.shopIcons.life} Backup Heart:** `, userHearts],
-      [`**${def.standards.shopIcons.pick} Pickaxe:** `, userPicks],
-      [`**${def.standards.shopIcons.gem} Gems:** `, userGems],
-      [`**${def.standards.shopIcons.commonCrate} Common Crate:** `, userCommons]
+      [`**${def.standards.shopIcons.lock} Padlock:** `, await inventory.getUserItems(tid, 'lock')],
+      [`**${def.standards.shopIcons.mine} Landmine:** `, await inventory.getUserItems(tid, 'mine')],
+      [`**${def.standards.shopIcons.life} Backup Heart:** `, await inventory.getUserItems(tid, 'heart')],
+      [`**${def.standards.shopIcons.pick} Pickaxe:** `, await inventory.getUserItems(tid, 'pick')],
+      [`**${def.standards.shopIcons.gem} Gems:** `, await inventory.getUserItems(tid, 'gem')],
+      [`**${def.standards.shopIcons.commonCrate} Common Crate:** `, await inventory.getUserItems(tid, 'common')]
     ]);
     const inventoryWithItems = [];
     for (const [name, value] of mapItems.entries()) {
