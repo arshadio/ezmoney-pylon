@@ -386,6 +386,8 @@ export async function useItem(
         return message.inlineReply(
           `You don't have that item in your inventory!`
         );
+      const gemChance = Math.random();
+      const randomGem = Math.round(Math.random() * 3 + 1);
       const randomReward = Math.ceil(Math.random() * 60 + 30);
       await intoInventory.incrementCommonsInInventory(userId, -1);
       const reply = await message
@@ -393,9 +395,19 @@ export async function useItem(
         .then(async (msg) => {
           await sleep(1975);
           msg.edit(
-            `**good haul, you got ${def.standards.currency}${randomReward} from your crate**`
+            `**good haul, you got ${
+              def.standards.currency
+            }${randomReward} from your crate ${
+              gemChance >= 0.5
+                ? `and ${randomGem} ${def.standards.shopIcons.gem} Gems!`
+                : ``
+            }**`
           );
         });
       await op.incrementBalance(userId, randomReward);
+      await intoInventory.incrementGemsInInventory(
+        userId,
+        gemChance >= 0.5 ? randomGem : 0
+      );
   }
 }
