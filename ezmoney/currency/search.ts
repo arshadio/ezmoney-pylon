@@ -27,7 +27,7 @@ obc.raw('search', async (message) => {
   const secondsUntil = -Math.ceil((lastSearch - Date.now()) / 1000);
   const cooldownmsg = `You can't always be searching! \nTry again in **${40 -
     secondsUntil}** seconds.`;
-  if (lastSearch) return message.reply(cooldownmsg);
+  if (lastSearch) return message.inlineReply(cooldownmsg);
   const successRate = Math.random();
   const badReward = 0;
   const badChance = 0.84;
@@ -36,7 +36,7 @@ obc.raw('search', async (message) => {
   const choiceOne = op.randomizer(SEARCH_CHOICES.ONE);
   const choiceTwo = op.randomizer(SEARCH_CHOICES.TWO);
   const choiceThree = op.randomizer(SEARCH_CHOICES.THREE);
-  await message.reply(
+  await message.inlineReply(
     `**${discord.decor.Emojis.MAG} Where do you want to search?** Write your choice in chat.\n\`${choiceOne}\`, \`${choiceTwo}\`, \`${choiceThree}\``
   );
   await def.tempStorageKV.put(`lastSearch-${message.author?.id}`, Date.now(), {
@@ -59,13 +59,13 @@ obc.raw('search', async (message) => {
           successRate <= 0.2
         ) {
           if (bal < 250)
-            return message.reply(
+            return message.inlineReply(
               `${defMsg(
                 choice
               )} \nyou were caught! The police let you go with a warning.`
             );
           await op.incrementBalance(message.author.id, -250);
-          return message.reply(
+          return message.inlineReply(
             `${defMsg(choice)} \nyou were caught! You had to pay **${
               def.standards.currency
             }250** for your bail.`
@@ -78,9 +78,9 @@ obc.raw('search', async (message) => {
         ) {
           const newReward = randomReward + 165;
           await op.incrementBalance(message.author.id, newReward);
-          return message.reply(`${defMsg(choice)} and got some good loot! ${
-            discord.decor.Emojis.MONEYBAG
-          }
+          return message.inlineReply(`${defMsg(
+            choice
+          )} and got some good loot! ${discord.decor.Emojis.MONEYBAG}
 You found **${def.standards.currency}${newReward}**`);
         }
         if (
@@ -94,7 +94,7 @@ You found **${def.standards.currency}${newReward}**`);
           );
           if (userLives >= 1)
             await invfunc.incrementLivesInInventory(message.author.id, -1);
-          return message.reply(
+          return message.inlineReply(
             `${defMsg(choice)} and picked up a rare disease. \n${
               userLives >= 1
                 ? `You would have lost all your coins, but luckily you had a **${def.standards.shopIcons.life} Backup Heart** in your inventory!`
@@ -110,9 +110,9 @@ You found **${def.standards.currency}${newReward}**`);
         ) {
           const newReward = randomReward + 200;
           await op.incrementBalance(message.author.id, newReward);
-          return message.reply(`${defMsg(choice)} and got some good loot! ${
-            discord.decor.Emojis.MONEYBAG
-          }
+          return message.inlineReply(`${defMsg(
+            choice
+          )} and got some good loot! ${discord.decor.Emojis.MONEYBAG}
 You found **${def.standards.currency}${newReward}**`);
         }
         if (
@@ -122,7 +122,7 @@ You found **${def.standards.currency}${newReward}**`);
         ) {
           await op.incrementBalance(message.author.id, 75);
           await invfunc.incrementLivesInInventory(message.author.id, 1);
-          return message.reply(
+          return message.inlineReply(
             `${defMsg(choice)} and found **${
               def.standards.currency
             }75** and a **${def.standards.shopIcons.life} Backup Heart!**`
@@ -135,7 +135,7 @@ You found **${def.standards.currency}${newReward}**`);
         ) {
           await op.incrementBalance(message.author.id, randomReward);
           await invfunc.incrementCommonsInInventory(message.author.id);
-          return message.reply(
+          return message.inlineReply(
             `${defMsg(choice)} and found **${
               def.standards.currency
             }${randomReward}** and a **${
@@ -149,13 +149,13 @@ You found **${def.standards.currency}${newReward}**`);
           successRate <= 0.12
         ) {
           if (bal < 250)
-            return message.reply(
+            return message.inlineReply(
               `${defMsg(
                 choice
               )} \nyou were caught! The police let you go with a warning.`
             );
           await op.incrementBalance(message.author.id, -250);
-          return message.reply(
+          return message.inlineReply(
             `${defMsg(choice)} \nyou were caught!. You were forced to pay **${
               def.standards.currency
             }250** as part of your bail.`
@@ -165,7 +165,7 @@ You found **${def.standards.currency}${newReward}**`);
           message.author.id,
           successRate >= badChance ? badReward : randomReward
         );
-        await message.reply(
+        await message.inlineReply(
           `${defMsg(choice)} and found **${def.standards.currency}${
             successRate >= badChance ? badReward : randomReward
           }**`
@@ -176,7 +176,7 @@ You found **${def.standards.currency}${newReward}**`);
           message.author.id,
           successRate >= badChance ? badReward : randomReward
         );
-        await message.reply(
+        await message.inlineReply(
           `${defMsg(choice)} and found **${def.standards.currency}${
             successRate >= badChance ? badReward : randomReward
           }**`
@@ -189,13 +189,13 @@ You found **${def.standards.currency}${newReward}**`);
           successRate <= 0.25
         ) {
           if (bal < 250)
-            return message.reply(
+            return message.inlineReply(
               `${defMsg(
                 choice
               )} \nyou were caught! The police let you go with a warning.`
             );
           await op.incrementBalance(message.author.id, -250);
-          await message.reply(
+          await message.inlineReply(
             `${defMsg(choice)} \nyou were caught!. You were forced to pay **${
               def.standards.currency
             }250** as part of your bail.`
@@ -208,16 +208,16 @@ You found **${def.standards.currency}${newReward}**`);
         ) {
           const newReward = randomReward + 200;
           await op.incrementBalance(message.author.id, newReward);
-          return message.reply(`${defMsg(choice)} and got some good loot! ${
-            discord.decor.Emojis.MONEYBAG
-          }
+          return message.inlineReply(`${defMsg(
+            choice
+          )} and got some good loot! ${discord.decor.Emojis.MONEYBAG}
 You found **${def.standards.currency}${newReward}**`);
         }
         const success = await op.incrementBalance(
           message.author.id,
           successRate >= badChance ? badReward : randomReward
         );
-        await message.reply(
+        await message.inlineReply(
           `${defMsg(choice)} and found **${def.standards.currency}${
             successRate >= badChance ? badReward : randomReward
           }**`
