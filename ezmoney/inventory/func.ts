@@ -28,6 +28,27 @@ export async function confirmPurchase(
   await message.reply(embed);
 }
 
+export const giftEmbed = async (
+  count: number,
+  itemName: string,
+  giftedUser: string,
+  message: discord.Message
+) => {
+  const embed = new discord.Embed();
+  embed
+    .setColor(def.standards.embeds.general)
+    .setAuthor({
+      name: 'Item Gifted',
+      iconUrl: message.author.getAvatarUrl()
+    })
+    .setDescription(
+      `<:yes:718226032829923379> You gifted **${count} ${itemName}${
+        count === 1 ? '' : 's'
+      }** to **${giftedUser}**`
+    );
+  await message.reply(embed);
+};
+
 export async function incrementLocksInInventory(
   userId: discord.Snowflake,
   by: number = 1

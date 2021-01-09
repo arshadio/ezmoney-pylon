@@ -13,6 +13,7 @@ obc.raw('help', async (message) => {
     '`coinflip`',
     '`daily`',
     '`gamble`',
+    '`gift`',
     '`mine`',
     '`roll`',
     '`shop`',

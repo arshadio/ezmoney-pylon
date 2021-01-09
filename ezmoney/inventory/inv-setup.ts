@@ -411,3 +411,66 @@ export async function useItem(
       );
   }
 }
+
+export const giftItem = async (
+  userId: discord.Snowflake,
+  targetId: discord.Snowflake,
+  inventoryItem: discord.Snowflake,
+  count: number,
+  message: discord.Message
+) => {
+  const caseItem = inventoryItem.toLowerCase();
+  const isInInventory = await getUserItems(userId, caseItem);
+  const userTag = `<@${targetId}>`;
+  if (count === 0) return message.reply("can't gift 0 items");
+  if (userId === targetId) return message.reply(`cant gift to self`);
+  if (isInInventory === 0) return message.reply('not in inventory');
+  if (count > isInInventory) return message.reply(`don't have that many`);
+  // iterate thru items to find match
+  switch (true) {
+    case caseItem === Item.padlockID || caseItem === Item.padlockSF:
+      await intoInventory.incrementLocksInInventory(userId, -count);
+      await intoInventory.incrementLocksInInventory(targetId, count);
+      break;
+    case caseItem === Item.landmineID || caseItem === Item.landmineSF:
+      await intoInventory.incrementMinesInInventory(userId, -count);
+      await intoInventory.incrementMinesInInventory(targetId, count);
+      break;
+    case caseItem === Item.lifesaverID || caseItem === Item.lifesaverSF:
+      await intoInventory.incrementLivesInInventory(userId, -count);
+      await intoInventory.incrementLivesInInventory(targetId, count);
+      break;
+    case caseItem === Item.pickaxeID || caseItem === Item.pickaxeSF:
+      await intoInventory.incrementPicksInInventory(userId, -count);
+      await intoInventory.incrementPicksInInventory(targetId, count);
+      break;
+    case caseItem === Item.gemID:
+      await intoInventory.incrementGemsInInventory(userId, -count);
+      await intoInventory.incrementGemsInInventory(targetId, count);
+      break;
+    case caseItem === Item.commonCrateID:
+      await intoInventory.incrementCommonsInInventory(userId, -count);
+      await intoInventory.incrementCommonsInInventory(targetId, count);
+      break;
+  }
+  await intoInventory.giftEmbed(count, inventoryItem, userTag, message);
+};
+
+// const sendInline = async (content: string, message: discord.Message) => {
+//   return await message.inlineReply(content);
+// };
+
+// export const UseItem = async (
+//   userId: discord.Snowflake,
+//   inventoryItem: string,
+//   message: discord.Message
+// ) => {
+//   const caseItem = inventoryItem.toLowerCase();
+//   const equippedLock = await getLockEquipped(userId);
+//   const equippedMine = await getMineEquipped(userId);
+//   const isInInventory = await getUserItems(userId, caseItem);
+//   if (isInInventory === 0) return message.reply(`not in inventory`);
+//   switch (true) {
+//     case caseItem === Item.padlockID || caseItem === Item.padlockSF:
+//   }
+// };

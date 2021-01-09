@@ -87,6 +87,32 @@ obc.on(
 
 obc.on(
   {
+    name: 'gift',
+    aliases: ['giveitem'],
+    onError: ({ message }) => {
+      message.reply(`need help? \n\`${def.PREFIX}gift <count> <item> <user>\``);
+    }
+  },
+  (a) => ({
+    count: a.integer(),
+    shopItem: a.string(),
+    target: a.guildMember()
+  }),
+  // prettier-ignore
+  async (message, { count, shopItem, target }) => {
+    const item = inventory.findItemByName(shopItem);
+    if (item == null) {
+      return message.reply({
+        content: `Item with name: **${shopItem}** does not exist, use \`.shop\` to list items that can be sold.`,
+        allowedMentions: {}
+      });
+    }
+    await inventory.giftItem(message.author.id, target.user.id, shopItem, count, message);
+  }
+);
+
+obc.on(
+  {
     name: 'use',
     aliases: ['equip', 'open']
   },

@@ -119,7 +119,7 @@ export const multiplierIncByLevel: Map<number, string> = new Map([
 ]);
 
 // commands declaration
-const PREFIX = '.';
+export const PREFIX = '.';
 export const obc = new discord.command.CommandGroup({
   defaultPrefix: PREFIX
 });
