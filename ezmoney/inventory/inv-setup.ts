@@ -421,6 +421,11 @@ export const giftItem = async (
 ) => {
   const caseItem = inventoryItem.toLowerCase();
   const isInInventory = await getUserItems(userId, caseItem);
+  const userBalance = await op.getBalance(userId);
+  if (userBalance < 500)
+    return message.reply(
+      `You need at least **${def.standards.currency}500** to gift Items to users.`
+    );
   const userTag = `<@${targetId}>`;
   if (count === 0) return message.reply("can't gift 0 items");
   if (userId === targetId) return message.reply(`cant gift to self`);
