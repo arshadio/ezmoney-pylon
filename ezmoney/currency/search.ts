@@ -37,7 +37,21 @@ const caughtSearch = async (
   userId: discord.Snowflake,
   choice: string,
   message: discord.Message
-) => {};
+) => {
+  const bal = await op.getBalance(userId);
+  if (bal < 250)
+    return message.inlineReply(
+      `${defMsg(
+        choice
+      )} \nyou were caught! The police let you go with a warning.`
+    );
+  await op.incrementBalance(message.author.id, -250);
+  return message.inlineReply(
+    `${defMsg(choice)} \nyou were caught! You had to pay **${
+      def.standards.currency
+    }250** for your bail.`
+  );
+};
 
 obc.raw('search', async (message) => {
   const bal = await op.getBalance(message.author.id);
@@ -78,20 +92,8 @@ obc.raw('search', async (message) => {
           choiceOne === SEARCH_CHOICES.ONE[0] &&
           choice === choiceOne &&
           successRate <= 0.2
-        ) {
-          if (bal < 250)
-            return message.inlineReply(
-              `${defMsg(
-                choice
-              )} \nyou were caught! The police let you go with a warning.`
-            );
-          await op.incrementBalance(message.author.id, -250);
-          return message.inlineReply(
-            `${defMsg(choice)} \nyou were caught! You had to pay **${
-              def.standards.currency
-            }250** for your bail.`
-          );
-        }
+        )
+          return await caughtSearch(message.author.id, choice, message);
         if (
           choiceOne === SEARCH_CHOICES.ONE[0] &&
           choice === choiceOne &&
@@ -138,6 +140,28 @@ obc.raw('search', async (message) => {
           );
         }
         if (
+          choiceOne === SEARCH_CHOICES.ONE[2] &&
+          choice === choiceOne &&
+          successRate >= 0.7
+        )
+          return await betterSearch(message.author.id, choice, message);
+        if (
+          choiceOne === SEARCH_CHOICES.ONE[2] &&
+          choice === choiceOne &&
+          successRate <= 0.2
+        ) {
+          const randomGems = op.randomizer([1, 2]);
+          await op.incrementBalance(message.author.id, randomReward);
+          await invfunc.incrementGemsInInventory(message.author.id, randomGems);
+          return message.inlineReply(
+            `${defMsg(choice)} and found **${
+              def.standards.currency
+            }${randomReward}** and **${randomGems} ${
+              def.standards.shopIcons.gem
+            } Gem${randomGems === 1 ? '!' : 's!'}**`
+          );
+        }
+        if (
           choiceOne === SEARCH_CHOICES.ONE[3] &&
           choice === choiceOne &&
           successRate >= 0.6
@@ -156,20 +180,8 @@ obc.raw('search', async (message) => {
           choiceOne === SEARCH_CHOICES.ONE[3] &&
           choice === choiceOne &&
           successRate <= 0.12
-        ) {
-          if (bal < 250)
-            return message.inlineReply(
-              `${defMsg(
-                choice
-              )} \nyou were caught! The police let you go with a warning.`
-            );
-          await op.incrementBalance(message.author.id, -250);
-          return message.inlineReply(
-            `${defMsg(choice)} \nyou were caught! You were forced to pay **${
-              def.standards.currency
-            }250** as part of your bail.`
-          );
-        }
+        )
+          return await caughtSearch(message.author.id, choice, message);
         const success = await op.incrementBalance(
           message.author.id,
           successRate >= badChance ? badReward : randomReward
@@ -190,7 +202,7 @@ obc.raw('search', async (message) => {
         if (
           choiceTwo === SEARCH_CHOICES.TWO[3] &&
           choice === choiceTwo &&
-          successRate >= 0.75
+          successRate >= 0.9
         )
           return await betterSearch(message.author.id, choice, message);
         const success = await op.incrementBalance(
@@ -208,20 +220,8 @@ obc.raw('search', async (message) => {
           choiceThree === SEARCH_CHOICES.THREE[1] &&
           choice === choiceThree &&
           successRate <= 0.25
-        ) {
-          if (bal < 250)
-            return message.inlineReply(
-              `${defMsg(
-                choice
-              )} \nyou were caught! The police let you go with a warning.`
-            );
-          await op.incrementBalance(message.author.id, -250);
-          return message.inlineReply(
-            `${defMsg(choice)} \nyou were caught! You were forced to pay **${
-              def.standards.currency
-            }250** as part of your bail.`
-          );
-        }
+        )
+          return await caughtSearch(message.author.id, choice, message);
         if (
           choiceThree === SEARCH_CHOICES.THREE[1] &&
           choice === choiceThree &&
